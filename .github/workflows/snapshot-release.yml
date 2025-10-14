@@ -79,7 +79,7 @@ jobs:
           cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_APPIMAGE=ON -DCMAKE_INSTALL_PREFIX=/usr
           cmake --build . -j$(nproc)
           strip mc-bot-manager
-          mv ../../linuxdeploy*.AppImage .
+          mv ../linuxdeploy*.AppImage .
           export PATH=$PWD:$PATH
           cmake --build . --target appimage
           mv MC_Bot_Manager*.AppImage ../../${{ env.APPIMAGE_ARTIFACT }}
