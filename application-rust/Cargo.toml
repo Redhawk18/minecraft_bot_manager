@@ -6,7 +6,8 @@ edition = "2024"
 [dependencies]
 dotenv = "0.15"
 iced = { version = "0.14.0-dev", features = ["advanced", "canvas", "debug", "image", "highlighter", "hot", "lazy", "markdown", "time-travel", "tokio"] }
-iced_dialog = { git = "https://github.com/pml68/iced_dialog.git", rev = "ac6a603" }
+iced_aw = { version = "0.13.0-dev", features = [ "menu", "number_input", "tabs" ] }
+iced_dialog = "0.14.0-dev" 
 iced_fonts = { git = "https://github.com/Redhawk18/iced_fonts", rev = "982eb5a", features = ["lucide"] }
 rfd = "0.15"
 tokio = { version = "1", features = ["fs"] }
@@ -19,3 +20,5 @@ iced = { git = "https://github.com/iced-rs/iced.git", rev = "01429d7" }
 iced_core = { git = "https://github.com/iced-rs/iced.git", rev = "01429d7" }
 iced_futures = { git = "https://github.com/iced-rs/iced.git", rev = "01429d7" }
 iced_widget = { git = "https://github.com/iced-rs/iced.git", rev = "01429d7" }
+iced_aw = { git = "https://github.com/iced-rs/iced_aw.git", rev = "2c2a5c2" }
+iced_dialog = { git = "https://git.sr.ht/~pml68/iced_dialog", rev = "bac560c9" }

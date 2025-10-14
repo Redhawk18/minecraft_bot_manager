@@ -118,8 +118,9 @@ version = "0.1.0"
 dependencies = [
  "dotenv",
  "iced",
+ "iced_aw",
  "iced_dialog",
- "iced_fonts",
+ "iced_fonts 0.2.0",
  "rfd",
  "tokio",
  "tracing",
@@ -630,6 +631,19 @@ name = "cfg_aliases"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "613afe47fcd5fac7ccf1db93babcb082c5994d996f20b8b159f2ad1658eb5724"
+
+[[package]]
+name = "chrono"
+version = "0.4.42"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "145052bdd345b87320e369255277e3fb5152762ad123a901ef5c262dd38fe8d2"
+dependencies = [
+ "iana-time-zone",
+ "js-sys",
+ "num-traits",
+ "wasm-bindgen",
+ "windows-link 0.2.1",
+]
 
 [[package]]
 name = "clipboard-win"
@@ -1564,6 +1578,30 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dfa686283ad6dd069f105e5ab091b04c62850d3e4cf5d67debad1933f55023df"
 
 [[package]]
+name = "iana-time-zone"
+version = "0.1.64"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "33e57f83510bb73707521ebaffa789ec8caf86f9657cad665b092b581d40e9fb"
+dependencies = [
+ "android_system_properties",
+ "core-foundation-sys",
+ "iana-time-zone-haiku",
+ "js-sys",
+ "log",
+ "wasm-bindgen",
+ "windows-core 0.61.2",
+]
+
+[[package]]
+name = "iana-time-zone-haiku"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f31827a206f56af32e590ba56d5d2d085f558508192593743f16b2306495269f"
+dependencies = [
+ "cc",
+]
+
+[[package]]
 name = "iced"
 version = "0.14.0-dev"
 source = "git+https://github.com/iced-rs/iced.git?rev=01429d7#01429d72cdd1a962ca19544f1aa4798cf8b774a8"
@@ -1579,6 +1617,21 @@ dependencies = [
  "iced_winit",
  "image",
  "thiserror 2.0.17",
+]
+
+[[package]]
+name = "iced_aw"
+version = "0.13.0-dev"
+source = "git+https://github.com/iced-rs/iced_aw.git?rev=2c2a5c2#2c2a5c22945c30ed6a9ac71bbc79a77c0624ff99"
+dependencies = [
+ "cfg-if",
+ "chrono",
+ "iced_core",
+ "iced_fonts 0.3.0-dev",
+ "iced_widget",
+ "num-format",
+ "num-traits",
+ "web-time",
 ]
 
 [[package]]
@@ -1640,7 +1693,7 @@ dependencies = [
 [[package]]
 name = "iced_dialog"
 version = "0.14.0-dev"
-source = "git+https://github.com/pml68/iced_dialog.git?rev=ac6a603#ac6a60347a2d044926ec200665cea430f12b34fe"
+source = "git+https://git.sr.ht/~pml68/iced_dialog?rev=bac560c9#bac560c9c3516b515728655f0a99d84f1d5a08e2"
 dependencies = [
  "iced_core",
  "iced_widget",
@@ -1652,7 +1705,17 @@ version = "0.2.0"
 source = "git+https://github.com/Redhawk18/iced_fonts?rev=982eb5a#982eb5ac9a02629cc9af824e3816376e4f52fc03"
 dependencies = [
  "iced_core",
- "iced_fonts_macros",
+ "iced_fonts_macros 0.2.0",
+ "iced_widget",
+]
+
+[[package]]
+name = "iced_fonts"
+version = "0.3.0-dev"
+source = "git+https://github.com/Redhawk18/iced_fonts.git?rev=31970b2#31970b2526f8b956d11473b1d3d27e46f0d3a6ae"
+dependencies = [
+ "iced_core",
+ "iced_fonts_macros 0.3.0-dev",
  "iced_widget",
 ]
 
@@ -1660,6 +1723,17 @@ dependencies = [
 name = "iced_fonts_macros"
 version = "0.2.0"
 source = "git+https://github.com/Redhawk18/iced_fonts?rev=982eb5a#982eb5ac9a02629cc9af824e3816376e4f52fc03"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+ "ttf-parser 0.25.1",
+]
+
+[[package]]
+name = "iced_fonts_macros"
+version = "0.3.0-dev"
+source = "git+https://github.com/Redhawk18/iced_fonts.git?rev=31970b2#31970b2526f8b956d11473b1d3d27e46f0d3a6ae"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2530,6 +2604,16 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "num-format"
+version = "0.4.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a652d9771a63711fd3c3deb670acfbe5c30a4072e664d7a3bf5a9e1056ac72c3"
+dependencies = [
+ "arrayvec",
+ "itoa",
 ]
 
 [[package]]

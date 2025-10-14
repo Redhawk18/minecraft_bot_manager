@@ -77,6 +77,7 @@
             # https://devenv.sh/reference/options/
             dotenv.disableHint = true;
 
+            languages.cplusplus.enable = true;
             languages.java.enable = true;
             languages.rust.enable = true;
             languages.rust.channel = "stable";
@@ -88,6 +89,9 @@
               # openssl
               # pkg-config
               tokio-console
+
+              qt6.full
+              protobuf
             ];
 
             env = {
