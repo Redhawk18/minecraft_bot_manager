@@ -32,8 +32,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
-        with:
-          submodules: recursive
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
@@ -52,9 +50,11 @@ jobs:
           wget -O linuxdeploy-x86_64.AppImage https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           wget -O linuxdeploy-plugin-qt-x86_64.AppImage https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
           chmod +x linuxdeploy*.AppImage
+          mv linuxdeploy*.AppImage application-c++/
 
       - name: Build AppImage
         run: |
+          cd application-c++
           mkdir -p build-appimage
           cd build-appimage
           cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_APPIMAGE=ON -DCMAKE_INSTALL_PREFIX=/usr
@@ -63,7 +63,7 @@ jobs:
           mv ../linuxdeploy*.AppImage .
           export PATH=$PWD:$PATH
           cmake --build . --target appimage
-          mv MC_Bot_Manager*.AppImage ../${{ env.APPIMAGE_ARTIFACT }}
+          mv MC_Bot_Manager*.AppImage ../../${{ env.APPIMAGE_ARTIFACT }}
 
       - name: Upload AppImage
         uses: actions/upload-artifact@v4
