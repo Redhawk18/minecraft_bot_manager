@@ -15,14 +15,42 @@ env:
   WINDOWS_ARTIFACT: mc-bot-manager-windows.zip
 
 jobs:
-  build-linux:
+  build-java:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
         with:
-          submodules: recursive
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        working-directory: mod
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        working-directory: mod
+        run: ./gradlew build -Pmod_version="$(git describe --always --tags --first-parent | sed 's/^v//')"
+
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-mod
+          path: mod/build/libs/*.jar
+
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
@@ -41,18 +69,20 @@ jobs:
           wget -O linuxdeploy-x86_64.AppImage https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           wget -O linuxdeploy-plugin-qt-x86_64.AppImage https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
           chmod +x linuxdeploy*.AppImage
+          mv linuxdeploy*.AppImage application-c++/
 
       - name: Build AppImage
         run: |
+          cd application-c++
           mkdir -p build-appimage
           cd build-appimage
           cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_APPIMAGE=ON -DCMAKE_INSTALL_PREFIX=/usr
           cmake --build . -j$(nproc)
           strip mc-bot-manager
-          mv ../linuxdeploy*.AppImage .
+          mv ../../linuxdeploy*.AppImage .
           export PATH=$PWD:$PATH
           cmake --build . --target appimage
-          mv MC_Bot_Manager*.AppImage ../${{ env.APPIMAGE_ARTIFACT }}
+          mv MC_Bot_Manager*.AppImage ../../${{ env.APPIMAGE_ARTIFACT }}
 
       - name: Upload AppImage artifact
         uses: actions/upload-artifact@v4
@@ -66,8 +96,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
-        with:
-          submodules: recursive
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
@@ -90,13 +118,14 @@ jobs:
       - name: Build
         shell: cmd
         run: |
+          cd application-c++
           mkdir build
           cd build
           cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release
           cmake --build . --config Release
 
       - name: Deploy Qt dependencies
-        working-directory: build
+        working-directory: application-c++/build
         shell: cmd
         run: |
           mkdir mc-bot-manager
@@ -105,9 +134,9 @@ jobs:
           windeployqt mc-bot-manager\mc-bot-manager.exe --release
 
       - name: Package Windows build
-        working-directory: build
+        working-directory: application-c++/build
         shell: cmd
-        run: 7z a ..\${{ env.WINDOWS_ARTIFACT }} mc-bot-manager\
+        run: 7z a ..\..\${{ env.WINDOWS_ARTIFACT }} mc-bot-manager\
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
@@ -116,12 +145,18 @@ jobs:
           path: ${{ env.WINDOWS_ARTIFACT }}
 
   create-release:
-    needs: [build-linux, build-windows]
+    needs: [build-java, build-linux, build-windows]
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
+
+      - name: Download Java artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: java-mod
+          path: ./java-mod
 
       - name: Download Linux artifact
         uses: actions/download-artifact@v5
@@ -149,6 +184,7 @@ jobs:
             **Branch:** ${{ github.ref_name }}
             **Commit:** ${{ github.event.head_commit.message }}
           files: |
+            java-mod/*.jar
             ${{ env.APPIMAGE_ARTIFACT }}
             ${{ env.WINDOWS_ARTIFACT }}
           prerelease: true
