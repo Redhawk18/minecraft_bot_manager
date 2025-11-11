@@ -1,0 +1,10 @@
+[package]
+name = "prismlauncher"
+description = "PrismLauncher API invoked through their command-line interface."
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[dependencies]
+directories = "6"
+which = "8"

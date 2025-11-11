@@ -4,6 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+prismlauncher = { path = "../crates/prismlauncher/" }
+
+directories = "6.0"
 dotenv = "0.15"
 iced = { version = "0.14.0-dev", features = ["advanced", "canvas", "debug", "image", "highlighter", "hot", "lazy", "markdown", "time-travel", "tokio"] }
 iced_aw = { version = "0.13.0-dev", features = [ "menu", "number_input", "tabs" ] }

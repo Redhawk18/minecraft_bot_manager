@@ -89,6 +89,7 @@
               # openssl
               # pkg-config
               tokio-console
+              xvfb-run # prismlauncher bullshit
 
               qt6.full
               protobuf
