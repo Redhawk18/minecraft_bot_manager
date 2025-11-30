@@ -1,12 +1,15 @@
 mod action;
 mod screen;
 
-use iced::{Element, Task, exit};
+use iced::{Element, Task, exit, font, widget};
+use iced_aw::Tabs;
+use iced_fonts::LUCIDE_FONT_BYTES;
 use std::{fmt::Display, mem};
 
 use screen::configure::Configure;
 
 pub fn main() -> iced::Result {
+    tracing_subscriber::fmt::init();
     iced::application(Application::new, Application::update, Application::view).run()
 }
 
@@ -26,7 +29,7 @@ enum Instruction {
 }
 
 /// What module we use to render the entire UI. This makes our code greatly simplified.
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 enum Screen {
     /// The setup page to configure and add a new bot.
     Configure,
@@ -115,6 +118,7 @@ impl Display for Status {
 #[derive(Debug, Clone)]
 enum Message {
     Exit,
+    FontLoaded(Result<(), font::Error>),
     Screen(Screen),
 
     Configure(screen::configure::Message),
@@ -122,17 +126,21 @@ enum Message {
 }
 
 impl Application {
-    fn new() -> Self {
-        Self {
-            bots: vec![],
-            screen: Screen::Configure,
-            state: State::default(),
-        }
+    fn new() -> (Self, Task<Message>) {
+        (
+            Self {
+                bots: vec![],
+                screen: Screen::default(),
+                state: State::default(),
+            },
+            Task::batch(vec![font::load(LUCIDE_FONT_BYTES).map(Message::FontLoaded)]),
+        )
     }
 
     fn update(&mut self, message: Message) -> Task<Message> {
         match message {
             Message::Exit => exit(),
+            Message::FontLoaded(_) => Task::none(),
             Message::Screen(new_screen) => {
                 self.screen = new_screen;
                 Task::none()
@@ -155,30 +163,41 @@ impl Application {
     // Performs [`Instructions`] that descendants call to mutate [`Self`]'s state.
     fn perform(&mut self, instruction: Instruction) {
         match instruction {
-            Instruction::Configure(instruction) => match instruction {
-                screen::configure::Instruction::Submit => {
-                    // Just take what we want.
-                    let username = mem::take(&mut self.state.configure.username);
-                    let instance_name = mem::take(&mut self.state.configure.instance_name);
-                    let gamemode =
-                        mem::take(&mut self.state.configure.gamemode).expect("Not initialized");
+            Instruction::Configure(instruction) => {
+                match instruction {
+                    screen::configure::Instruction::Back => self.screen = Screen::Table,
+                    screen::configure::Instruction::Submit => {
+                        // Just take what we want.
+                        let username = mem::take(&mut self.state.configure.username);
+                        let instance_name = mem::take(&mut self.state.configure.instance_name);
+                        let gamemode =
+                            mem::take(&mut self.state.configure.gamemode).expect("Not initialized");
 
-                    let bot = Bot::new(username, instance_name, gamemode);
-                    self.bots.push(bot);
+                        let bot = Bot::new(username, instance_name, gamemode);
+                        self.bots.push(bot);
 
-                    self.screen = Screen::Table;
+                        self.screen = Screen::Table;
+                    }
                 }
-            },
+            }
             Instruction::Table(instruction) => todo!(),
         }
     }
 
     fn view(&self) -> Element<'_, Message> {
-        let element = match &self.screen {
-            Screen::Configure => self.state.configure.view().map(Message::Configure),
-            Screen::Table => screen::table::view(&self.bots).map(Message::Table),
-        };
+        let tabs = Tabs::new(Message::Screen)
+            .push(
+                Screen::Table,
+                "Table".into(),
+                screen::table::view(&self.bots).map(Message::Table),
+            )
+            .push(
+                Screen::Configure,
+                "Configure".into(),
+                self.state.configure.view().map(Message::Configure),
+            )
+            .set_active_tab(&self.screen);
 
-        element.explain(iced::Color::BLACK)
+        tabs.into()
     }
 }

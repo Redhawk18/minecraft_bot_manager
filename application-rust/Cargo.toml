@@ -8,20 +8,23 @@ prismlauncher = { path = "../crates/prismlauncher/" }
 
 directories = "6.0"
 dotenv = "0.15"
-iced = { version = "0.14.0-dev", features = ["advanced", "canvas", "debug", "image", "highlighter", "hot", "lazy", "markdown", "time-travel", "tokio"] }
+iced = { version = "0.14.0-dev", features = ["advanced",  "debug", "image", "highlighter", "hot", "time-travel", "tokio"] }
 iced_aw = { version = "0.13.0-dev", features = [ "menu", "number_input", "tabs" ] }
-iced_dialog = "0.14.0-dev" 
+# iced_dialog = "0.14.0-dev" 
 iced_fonts = { git = "https://github.com/Redhawk18/iced_fonts", rev = "982eb5a", features = ["lucide"] }
-rfd = "0.15"
+prost = "0.14"
+# rfd = "0.16"
 tokio = { version = "1", features = ["fs"] }
 tracing = "0.1"
 tracing-subscriber = "0.3"
-uuid = { version = "1", features = ["serde", "v4"] }
+
+[build-dependencies]
+prost-build = "0.14"
 
 [patch.crates-io]
 iced = { git = "https://github.com/iced-rs/iced.git", rev = "01429d7" }
 iced_core = { git = "https://github.com/iced-rs/iced.git", rev = "01429d7" }
 iced_futures = { git = "https://github.com/iced-rs/iced.git", rev = "01429d7" }
 iced_widget = { git = "https://github.com/iced-rs/iced.git", rev = "01429d7" }
-iced_aw = { git = "https://github.com/iced-rs/iced_aw.git", rev = "2c2a5c2" }
+iced_aw = { git = "https://github.com/iced-rs/iced_aw.git", rev = "f49e058" }
 iced_dialog = { git = "https://git.sr.ht/~pml68/iced_dialog", rev = "bac560c9" }

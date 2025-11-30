@@ -2,6 +2,7 @@ use iced::{
     Element, Length,
     widget::{button, center, column, text, text_input, toggler},
 };
+use iced_fonts::lucide::arrow_left;
 use prismlauncher::{Address, GameMode, Hostname};
 use std::{borrow::Cow, net::IpAddr};
 use tracing::trace;
@@ -18,11 +19,13 @@ pub struct Configure {
 }
 
 pub enum Instruction {
+    Back,
     Submit,
 }
 
 #[derive(Debug, Clone)]
 pub enum Message {
+    Back,
     BotNameChange(String),
     InstanceNameChange(String),
     IsMultiplayer(bool),
@@ -37,6 +40,7 @@ impl Configure {
 
     pub fn update(&mut self, message: Message) -> Action<Instruction, Message> {
         match message {
+            Message::Back => return Action::new(Instruction::Back),
             Message::BotNameChange(name) => self.username = name,
             Message::InstanceNameChange(name) => self.instance_name = name,
             Message::IsMultiplayer(bool) => self.is_multiplayer = bool,
@@ -77,37 +81,41 @@ impl Configure {
     pub fn view(&self) -> Element<'_, Message> {
         const SPACE: f32 = 230.0;
 
-        center(
-            column![
-                text("Bot Name"),
-                text_input("mankool69", &self.username)
-                    .on_input(Message::BotNameChange)
-                    .width(SPACE),
-                text("Prismlauncher Instance"),
-                text_input("const_mankool69", &self.instance_name)
-                    .width(SPACE)
-                    .on_input(Message::InstanceNameChange),
-                toggler(self.is_multiplayer).on_toggle(Message::IsMultiplayer),
-                if self.is_multiplayer {
-                    column![
-                        text("Multiplayer Server Host"),
-                        text_input("Server IP", &self.gamemode_raw)
-                            .on_input(Message::GamemodeChange)
-                            .width(SPACE)
-                    ]
-                } else {
-                    column![
-                        text("Singleplayer World Name"),
-                        text_input("World Name", &self.gamemode_raw)
-                            .on_input(Message::GamemodeChange)
-                            .width(SPACE),
-                    ]
-                },
-                button("Submit").on_press(Message::Submit),
-            ]
-            .padding(3)
-            .spacing(10),
-        )
+        column![
+            button(arrow_left()).on_press(Message::Back),
+            center(
+                column![
+                    text("Bot Name"),
+                    text_input("mankool69", &self.username)
+                        .on_input(Message::BotNameChange)
+                        .width(SPACE),
+                    text("Prismlauncher Instance"),
+                    text_input("const_mankool69", &self.instance_name)
+                        .width(SPACE)
+                        .on_input(Message::InstanceNameChange),
+                    toggler(self.is_multiplayer).on_toggle(Message::IsMultiplayer),
+                    if self.is_multiplayer {
+                        column![
+                            text("Multiplayer Server Host"),
+                            text_input("Server IP", &self.gamemode_raw)
+                                .on_input(Message::GamemodeChange)
+                                .width(SPACE)
+                        ]
+                    } else {
+                        column![
+                            text("Singleplayer World Name"),
+                            text_input("World Name", &self.gamemode_raw)
+                                .on_input(Message::GamemodeChange)
+                                .width(SPACE),
+                        ]
+                    },
+                    button("Submit").on_press(Message::Submit),
+                ]
+                .padding(3)
+                .spacing(10),
+            )
+        ]
+        .padding(10)
         .into()
     }
 }

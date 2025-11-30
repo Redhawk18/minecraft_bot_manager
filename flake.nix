@@ -109,7 +109,7 @@
                   xorg.libX11
                 ]
               );
-              ICED_BACKEND = "wgpu"; # wgpu or skia
+              ICED_BACKEND = "wgpu"; # wgpu or tiny-skia
               RUST_LOG = "info";
             };
           };

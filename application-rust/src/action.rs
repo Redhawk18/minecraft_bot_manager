@@ -21,7 +21,7 @@ use std::fmt;
 /// be executed.
 ///
 /// In many instances, you will want to return both an `Instruction` and a
-/// [`Task`].  Say, for example, when you'd like to navigate to a different
+/// [`Task`]. Say, for example, when you'd like to navigate to a different
 /// screen *and* focus the first input field. This can be achieved with e.g.
 /// `Action::new(Instruction::NavigateToScreen).with_task(focus_first_input())`.
 ///
