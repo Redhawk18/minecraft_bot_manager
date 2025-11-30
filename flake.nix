@@ -81,18 +81,17 @@
             languages.java.enable = true;
             languages.rust.enable = true;
             languages.rust.channel = "stable";
+            languages.rust.mold.enable = true;
             packages = with pkgs; [
               act
               comet
               hot
-              just
-              # openssl
-              # pkg-config
+              protobuf
               tokio-console
               xvfb-run # prismlauncher bullshit
 
+              # c++
               qt6.full
-              protobuf
             ];
 
             env = {
