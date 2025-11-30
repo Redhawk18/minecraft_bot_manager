@@ -8,7 +8,7 @@ message BaritoneSettingInfo {
   string type = 2;                      // Class type (Boolean, Integer, Double, etc.)
   string current_value = 3;
   string default_value = 4;
-  optional string description = 5;
+  string description = 5;
 }
 
 // Command information

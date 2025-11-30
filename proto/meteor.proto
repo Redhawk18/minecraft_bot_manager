@@ -25,10 +25,10 @@ message SettingInfo {
   repeated string possible_values = 4;  // For enums
 
   // Optional metadata
-  optional double min_value = 5;        // For numeric settings
-  optional double max_value = 6;        // For numeric settings
-  optional string description = 7;      // Setting description
-  optional string group_name = 8;       // Setting group
+   double min_value = 5;        // For numeric settings
+   double max_value = 6;        // For numeric settings
+   string description = 7;      // Setting description
+   string group_name = 8;       // Setting group
 }
 
 // Module information
@@ -42,7 +42,7 @@ message ModuleInfo {
 
 // Request all available modules (Manager -> Client)
 message GetModulesRequest {
-  optional string category_filter = 1;  // Optional: filter by category
+   string category_filter = 1;  // Optional: filter by category
 }
 
 // Response with all modules (Client -> Manager)
@@ -53,7 +53,7 @@ message GetModulesResponse {
 // Set module configuration (Manager -> Client)
 message SetModuleConfigCommand {
   string module_name = 1;
-  optional bool enabled = 2;            // Enable/disable the module
+   bool enabled = 2;            // Enable/disable the module
   map<string, string> settings = 3;     // Setting path -> value (use "group.name" format for grouped settings)
 }
 
@@ -68,6 +68,6 @@ message SetModuleConfigResponse {
 // Useful for when modules are toggled manually or by other means
 message ModuleStateChanged {
   string module_name = 1;
-  optional bool enabled = 2;                    // If present, module was toggled
+   bool enabled = 2;                    // If present, module was toggled
   map<string, string> changed_settings = 3;     // Settings that changed (path -> new value)
 }
